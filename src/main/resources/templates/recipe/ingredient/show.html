@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Ingredient</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"
+        th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+  <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+          integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"
+          th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<!--/*@thymesVar id="ingredient" type="guru.springframework.commands.IngredientCommand"*/-->
+<!--/*@thymesVar id="uom" type="guru.springframework.commands.UnitOfMeasureCommand"*/-->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="row">
+        <div class="col-md-10">
+          <h5><a class ="btn btn-default" href="#" th:href="@{'/recipe/' + ${ingredient.getRecipeId()} + '/ingredients'}" role="button">Back to Ingredient List</a></h5>
+        </div>
+        <div class="col-md-2">
+          <h5><a class ="btn btn-default" href="#" th:href="@{'/recipe/' + ${ingredient.getRecipeId()} + '/show'}" role="button">Back to Recipe</a></h5>
+        </div>
+      </div>
+      <div class="panel-group">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h5 class="panel-title">Ingredient</h5>
+          </div>
+          <div class="panel-body">
+            <div class="table-responsive" >
+              <table class="table table-hover">
+                <thead class="thead-inverse">
+                <tr>
+                  <td>Ingredient ID</td>
+                  <td>Description</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td th:text="${ingredient.getId()}">123</td>
+                  <td th:text="${ingredient.getAmount() + ' ' +ingredient.getUnitOfMeasure().getDescription()  + ' -' + ingredient.getDescription()}">Description</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
