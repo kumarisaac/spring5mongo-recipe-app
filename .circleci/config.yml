@@ -16,6 +16,7 @@ jobs:
 
     environment:
       MAVEN_OPTS: -Xmx3200m
+      TERM: dumb
 
     steps:
       # Checkout the code as the first step.
@@ -40,7 +41,7 @@ jobs:
 
       - run:
           name: Test
-          command: mvn integration-test cobertura:cobertura
+          command: mvn integration-test
 
       - run:
           name: Save test results
@@ -55,9 +56,9 @@ jobs:
       - store_artifacts:
           path: ~/test-resuts/junit
 
-      - run:
-          name: Send to CodeCov
-          command: bash <(curl -s https://codecov.io/bash)
+#      - run:
+#          name: Send to CodeCov
+#          command: bash <(curl -s https://codecov.io/bash)
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
