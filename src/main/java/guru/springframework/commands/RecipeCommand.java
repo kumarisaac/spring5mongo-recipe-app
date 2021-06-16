@@ -7,8 +7,8 @@ import lombok.Setter;
 import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -49,10 +49,10 @@ public class RecipeCommand {
     @Size(min = 10, max = 255)
     @NotBlank
     private String directions;
-    private Set<IngredientCommand> ingredients = new HashSet<>();
+    private List<IngredientCommand> ingredients = new ArrayList<>();
     private Byte[] image;
     private String imagePath;
     private NotesCommand notes;
     private Difficulty difficulty;
-    private Set<CategoryCommand> categories = new HashSet<>();
+    private List<CategoryCommand> categories = new ArrayList<>();
 }

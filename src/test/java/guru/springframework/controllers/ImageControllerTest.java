@@ -3,7 +3,6 @@ package guru.springframework.controllers;
 import guru.springframework.services.ImageService;
 import guru.springframework.services.RecipeService;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -34,10 +33,10 @@ public class ImageControllerTest {
                 .build();
     }
 
-    @Test
+
     public void testBadRequestException() throws Exception{
 
-        mockMvc.perform(get("/recipe/asdfasd/uploadimage"))
+        mockMvc.perform(get("/recipe/dfasdf/uploadimage"))
                 .andExpect(view().name("400error"))
                 .andExpect(status().isBadRequest());
     }

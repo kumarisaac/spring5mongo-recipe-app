@@ -61,7 +61,8 @@
                       <ul>
                         <li th:each="category : ${categoryList}">
                           <input type="checkbox" th:value="${category.id}"
-                                 th:field="*{categories}" />
+                                 th:field="*{categories}"
+                                 th:attr="checked = 'true'"/>
                           <label th:for="${#ids.prev('categories')}" th:text="${category.categoryName}" >American</label>
                         </li>
                       </ul>
@@ -140,7 +141,7 @@
                 <div class="panel-body">
                   <div class="row">
                     <div class="col-md-12">
-                      <ul>
+                      <ul th:if="${not #lists.isEmpty(recipe.ingredients)}">
                         <li th:remove="all">1 Cup of milk</li>
                         <li th:remove="all">1 Teaspoon of chocolate</li>
                         <li th:each="ingredient : ${recipe.ingredients}"
@@ -149,6 +150,12 @@
                                           ' - ' + ingredient.getDescription())}">1 Teaspoon of Sugar
                         </li>
                       </ul>
+                      <div th:each="ingredientEach, idx : ${recipe.ingredients}" >
+                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__].id}" />
+                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__].description}" />
+                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__].amount}" />
+                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__].unitOfMeasure.id}" />
+                      </div>
                     </div>
                   </div>
                 </div>

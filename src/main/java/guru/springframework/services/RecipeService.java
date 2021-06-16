@@ -3,6 +3,7 @@ package guru.springframework.services;
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.domain.Recipe;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface RecipeService {
@@ -11,4 +12,5 @@ public interface RecipeService {
     RecipeCommand saveRecipeCommand(RecipeCommand recipeCommand);
     RecipeCommand findCommandById(String aLong);
     void deleteById(String aLong);
+    Collection<Recipe> findByDescriptionLike(String description);
 }

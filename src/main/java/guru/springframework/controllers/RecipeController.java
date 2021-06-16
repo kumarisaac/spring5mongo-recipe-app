@@ -47,7 +47,7 @@ public class RecipeController {
     @PostMapping("recipe")
     public String saveOrUpdate(@Valid @ModelAttribute("recipe") RecipeCommand recipeCommand,
                                BindingResult result){
-
+        log.debug("inside saveorUpdate method");
         if(result.hasErrors()){
             result.getAllErrors().forEach(error -> log.debug(error.toString()));
 
@@ -56,6 +56,7 @@ public class RecipeController {
 
         RecipeCommand saveRecipe = recipeService.saveRecipeCommand(recipeCommand);
 
+        log.debug("end of saveorUpdate method");
         return "redirect:/recipe/" + saveRecipe.getId()+"/show";
     }
 

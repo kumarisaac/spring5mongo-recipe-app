@@ -66,9 +66,9 @@
                   <tr th:each="ingredient : ${recipe.getIngredients()}">
                     <td th:text="${ingredient.getId()}">123</td>
                     <td th:text="${ingredient.getAmount() + ' ' +ingredient.getUnitOfMeasure().getDescription()  + ' -' + ingredient.getDescription()}">Description</td>
-                    <td><a href="#" th:href="@{'/recipe/' + ${ingredient.getRecipeId()} + '/ingredient/' + ${ingredient.getId()} + '/show'}">View</a></td>
-                    <td><a href="#" th:href="@{'/recipe/' + ${ingredient.getRecipeId()} + '/ingredient/' + ${ingredient.getId()} +'/update'}">Update</a></td>
-                    <td><a href="#" th:href="@{'/recipe/' + ${ingredient.getRecipeId()} + '/ingredient/' + ${ingredient.getId()} +'/delete'}">Delete</a></td>
+                    <td><a href="#" th:href="@{'/recipe/' + ${recipe.getId()} + '/ingredient/' + ${ingredient.getId()} + '/show'}">View</a></td>
+                    <td><a href="#" th:href="@{'/recipe/' + ${recipe.getId()} + '/ingredient/' + ${ingredient.getId()} +'/update'}">Update</a></td>
+                    <td><a href="#" th:href="@{'/recipe/' + ${recipe.getId()} + '/ingredient/' + ${ingredient.getId()} +'/delete'}">Delete</a></td>
                   </tr>
                   </tbody>
                 </table>

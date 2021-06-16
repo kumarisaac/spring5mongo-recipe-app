@@ -29,13 +29,13 @@ public class UnitOfMeasureToUnitOfMeasureCommandTest {
 
     @Test
     public void testEmptyObj() throws Exception {
-        assertNotNull(converter.convert(new UnitOfMeasure()));
+        assertNotNull(converter.convert(UnitOfMeasure.builder().build()));
     }
 
     @Test
     public void convert() throws Exception {
         //given
-        UnitOfMeasure uom = new UnitOfMeasure();
+        UnitOfMeasure uom = UnitOfMeasure.builder().build();
         uom.setId(LONG_VALUE);
         uom.setDescription(DESCRIPTION);
         //when

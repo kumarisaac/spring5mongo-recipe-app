@@ -9,6 +9,7 @@ import guru.springframework.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -52,15 +53,19 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public RecipeCommand saveRecipeCommand(RecipeCommand recipeCommand) {
+        log.debug("inside save Recipe command method");
 
-        Recipe dbRecipe = findById(recipeCommand.getId());
+        if(!recipeCommand.getId().isEmpty()){
+            Recipe dbRecipe = findById(recipeCommand.getId());
+            recipeCommand.setImage(dbRecipe.getImage());
+        }
 
-        recipeCommand.setImage(dbRecipe.getImage());
         Recipe recipe = recipeCommandToRecipe.convert(recipeCommand);
 
         Recipe savedRecipe = recipeRepository.save(recipe);
 
         log.debug("Saved RecipeID: " + savedRecipe.getId());
+        log.debug("End of save Recipe command method");
         return recipeToRecipeCommand.convert(savedRecipe);
     }
 
@@ -72,5 +77,10 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public void deleteById(String aLong) {
         recipeRepository.deleteById(aLong);
+    }
+
+    @Override
+    public Collection<Recipe> findByDescriptionLike(String description) {
+        return recipeRepository.findByDescriptionLike(description);
     }
 }

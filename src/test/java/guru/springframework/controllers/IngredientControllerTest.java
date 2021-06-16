@@ -3,6 +3,7 @@ package guru.springframework.controllers;
 import guru.springframework.commands.IngredientCommand;
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.commands.UnitOfMeasureCommand;
+import guru.springframework.converters.IngredientToIngredientCommand;
 import guru.springframework.services.IngredientService;
 import guru.springframework.services.RecipeService;
 import guru.springframework.services.UnitOfMeasureService;
@@ -12,9 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.HashSet;
-import java.util.Set;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,6 +32,9 @@ public class IngredientControllerTest {
     @Mock
     UnitOfMeasureService unitOfMeasureService;
 
+    @Mock
+    IngredientToIngredientCommand ingredientToIngredientCommand;
+
     IngredientController ingredientController;
 
     MockMvc mockMvc;
@@ -39,7 +42,7 @@ public class IngredientControllerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ingredientController = new IngredientController(recipeService, ingredientService, unitOfMeasureService);
+        ingredientController = new IngredientController(recipeService, ingredientService, unitOfMeasureService, ingredientToIngredientCommand);
         mockMvc = MockMvcBuilders.standaloneSetup(ingredientController).build();
     }
 
@@ -63,8 +66,8 @@ public class IngredientControllerTest {
     public void testupdateIngredient() throws Exception{
         //given
         IngredientCommand command =  new IngredientCommand();
-        Set<UnitOfMeasureCommand> measureCommands = new HashSet<>();
-        when(ingredientService.findByRecipeIdAndIngredientID(anyString(), anyString())).thenReturn(command);
+        Flux<UnitOfMeasureCommand> measureCommands = Flux.just();
+        when(ingredientService.findByRecipeIdAndIngredientID(anyString(), anyString())).thenReturn(Mono.just(command));
         when(unitOfMeasureService.getUnitOfMeasure()).thenReturn(measureCommands);
 
         //when
@@ -83,7 +86,7 @@ public class IngredientControllerTest {
     public void testGetIngredient() throws Exception{
         //given
         IngredientCommand command = new IngredientCommand();
-        when(ingredientService.findByRecipeIdAndIngredientID(anyString(), anyString())).thenReturn(command);
+        when(ingredientService.findByRecipeIdAndIngredientID(anyString(), anyString())).thenReturn(Mono.just(command));
 
 
         //when
@@ -101,10 +104,11 @@ public class IngredientControllerTest {
 
         //given
         RecipeCommand recipeCommand = new RecipeCommand();
-        Set<UnitOfMeasureCommand> uomCommands = new HashSet<>();
-
+        Flux<UnitOfMeasureCommand> uomCommands = Flux.just();
+        IngredientCommand ingredientCommand = new IngredientCommand();
         when(recipeService.findCommandById(anyString())).thenReturn(recipeCommand);
         when(unitOfMeasureService.getUnitOfMeasure()).thenReturn(uomCommands);
+        when(ingredientToIngredientCommand.convert(any())).thenReturn(ingredientCommand);
 
         //when
         mockMvc.perform(get("/recipe/1/ingredient/new"))
@@ -122,6 +126,8 @@ public class IngredientControllerTest {
     public void testDeleteIngredient() throws Exception{
 
 
+        when(ingredientToIngredientCommand.convert(any())).thenReturn(new IngredientCommand());
+        when(ingredientService.deleteIngredient(anyString(), anyString())).thenReturn(Mono.empty());
         mockMvc.perform(get("/recipe/1/ingredient/1/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/recipe/1/ingredients"));
