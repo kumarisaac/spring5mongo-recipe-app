@@ -46,8 +46,8 @@ jobs:
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            mkdir -p ~/test-results/jacoco/
+            mkdir -p ~/test-results/junit/;
+            mkdir -p ~/test-results/jacoco/;
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
             find . -type f -regex ".*/target/site/.*" -exec cp {} ~/test-results/jacoco/ \;
           when: always
@@ -56,7 +56,7 @@ jobs:
           path: ~/test-results
 
       - store_artifacts:
-          path: ~/test-resuts/junit
+          path: ~/test-results
 
 #      - run:
 #          name: Send to CodeCov

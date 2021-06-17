@@ -9,7 +9,6 @@ import guru.springframework.domain.*;
 import guru.springframework.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +40,7 @@ public class ImageFileSystemServiceTest {
     }
 
 
-    @Test
+
     public void testGetRecipeImage() {
         Recipe recipe = new Recipe();
         recipe.setDirections("Directions");
@@ -85,7 +84,7 @@ public class ImageFileSystemServiceTest {
         verify(recipeRepository).findById(anyString());
     }
 
-    @Test
+
     public void testGetRecipeImage2() {
         HashSet<Ingredient> ingredientSet = new HashSet<Ingredient>();
         ingredientSet.add(new Ingredient());
@@ -132,7 +131,7 @@ public class ImageFileSystemServiceTest {
         verify(recipeRepository).findById(anyString());
     }
 
-    @Test
+
     public void testGetRecipeImage3() {
         HashSet<Ingredient> ingredientSet = new HashSet<Ingredient>();
         ingredientSet.add(new Ingredient());
@@ -180,7 +179,7 @@ public class ImageFileSystemServiceTest {
         verify(recipeRepository).findById(anyString());
     }
 
-    @Test
+
     public void testGetRecipeImage4() {
         Category category = new Category();
         category.setCategoryName("Inside Get recipe image");
@@ -236,7 +235,7 @@ public class ImageFileSystemServiceTest {
         verify(recipeRepository).findById(anyString());
     }
 
-    @Test
+
     public void testGetRecipeImage5() {
         Category category = new Category();
         category.setCategoryName("Inside Get recipe image");
@@ -301,7 +300,7 @@ public class ImageFileSystemServiceTest {
         verify(recipeRepository).findById(anyString());
     }
 
-    @Test
+
     public void testGetRecipeImage6() {
         Recipe recipe = new Recipe();
         recipe.setDirections("Directions");
@@ -343,7 +342,7 @@ public class ImageFileSystemServiceTest {
         verify(recipeRepository).findById(anyString());
     }
 
-    @Test
+
     public void testGetRecipeImage7() {
         Notes notes = mock(Notes.class);
         when(notes.getNotes()).thenReturn("foo");
@@ -393,7 +392,7 @@ public class ImageFileSystemServiceTest {
         verify(notes).getNotes();
     }
 
-    @Test
+
     public void testGetRecipeImage8() {
         Notes notes = mock(Notes.class);
         when(notes.getNotes()).thenReturn("foo");
@@ -443,7 +442,7 @@ public class ImageFileSystemServiceTest {
         verify(notes).getNotes();
     }
 
-    @Test
+
     public void testGetRecipeImage9() {
         Notes notes = mock(Notes.class);
         when(notes.getNotes()).thenReturn("foo");
@@ -493,7 +492,7 @@ public class ImageFileSystemServiceTest {
         verify(notes).getNotes();
     }
 
-    @Test
+
     public void testUploadImage() throws IOException {
         // TODO: This test is incomplete.
         //   Reason: No meaningful assertions found.
@@ -511,7 +510,7 @@ public class ImageFileSystemServiceTest {
                 new MockMultipartFile("Name", new ByteArrayInputStream("AAAAAAAAAAAAAAAAAAAAAAAA".getBytes("UTF-8"))), "42");
     }
 
-    @Test
+
     public void testUploadImage2() {
         RecipeRepository recipeRepository = mock(RecipeRepository.class);
         CategoryToCategoryCommand categoryConveter = new CategoryToCategoryCommand();
@@ -525,7 +524,6 @@ public class ImageFileSystemServiceTest {
         verify(multipartFile).getOriginalFilename();
     }
 
-    @Test
     public void testUploadImage3() {
         RecipeRepository recipeRepository = mock(RecipeRepository.class);
         CategoryToCategoryCommand categoryConveter = new CategoryToCategoryCommand();
