@@ -48,6 +48,7 @@ jobs:
           command: |
             mkdir -p ~/test-results/;
             ls -ltrh;
+            cd target/surefire-reports;
             find . -type d -name "surefire-reports*" -exec tar -czf {}.tar.gz {} \;
             find . -type d -name "jacoco*" -exec tar -czf {}.tar.gz {} \;
             ls -ltrh;
