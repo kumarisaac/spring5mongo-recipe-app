@@ -53,7 +53,7 @@ jobs:
             tar -zcvf surefire-reports.tar.gz surefire-reports;
             mv surefire-reports.tar.gz ~/test-results/;
             cd site;
-            ls-ltrh;
+            ls -ltrh;
             tar -zcvf jacoco.tar.gz jacoco;
             mv jacoco.tar.gz ~/test-results/;
           when: always
