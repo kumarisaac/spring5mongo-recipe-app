@@ -48,7 +48,7 @@ jobs:
           command: |
             mkdir -p ~/test-results/;
             mkdir -p ~/test-artifacts/;
-            find . -type d -regex ".*/target/surefire-reports" -exec cp {}~/test-results/junit/ \;
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
             cd target;
             tar -zcvf surefire-reports.tar.gz surefire-reports;
             mv surefire-reports.tar.gz ~/test-artifacts/;
