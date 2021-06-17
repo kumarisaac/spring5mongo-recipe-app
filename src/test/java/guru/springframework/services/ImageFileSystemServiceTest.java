@@ -1,17 +1,21 @@
 package guru.springframework.services;
 
+
 import guru.springframework.commands.CategoryCommand;
 import guru.springframework.commands.NotesCommand;
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.converters.*;
 import guru.springframework.domain.*;
 import guru.springframework.repositories.RecipeRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +23,24 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@Slf4j
 public class ImageFileSystemServiceTest {
-    private static final String imagePath = "C:\\intelij\\spring5mongo-recipe-app\\src\\main\\resources\\static\\images\\tacos400x400.jpg";
+
+    private String imagePath;
+
+    @BeforeEach
+    private void setup(){
+        ClassLoader classLoader = ImageFileSystemService.class.getClassLoader();
+        imagePath = classLoader.getResource("static/images/tacos400x400.jpg").getPath();
+        char imageArray[] = imagePath.toCharArray();
+        char newArray[] = Arrays.copyOfRange(imageArray, 1, imageArray.length);
+
+        imagePath = new String(newArray);
+
+        log.debug(imagePath);
+    }
+
+
     @Test
     public void testGetRecipeImage() {
         Recipe recipe = new Recipe();
