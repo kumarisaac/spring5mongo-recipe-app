@@ -49,7 +49,8 @@ jobs:
             mkdir -p ~/test-results/;
             ls -ltrh;
             find . -type d -name "surefire-reports*" -exec tar -czf {}.tar.gz {} \;
-            find . -type d -regex "jacoco*" -exec tar -czf {}.tar.gz {} \;
+            find . -type d -name "jacoco*" -exec tar -czf {}.tar.gz {} \;
+            ls -ltrh;
             mv surefire-reports.tar.gz ~/test-results/;
             mv jacoco.tar.gz ~/test-results/;
           when: always
