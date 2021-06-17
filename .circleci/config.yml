@@ -41,13 +41,15 @@ jobs:
 
       - run:
           name: Test
-          command: mvn integration-test
+          command: mvn integration-test jacoco:report
 
       - run:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
+            mkdir -p ~/test-results/jacoco/
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex ".*/target/site/.*" -exec cp {} ~/test-results/jacoco/ \;
           when: always
 
       - store_test_results:
