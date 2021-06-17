@@ -46,12 +46,16 @@ jobs:
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/;
+            mkdir -p ~/test-results/junit/;
+            mkdir -p ~/test-results/integration/;
             mkdir -p ~/test-artifacts/;
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex ".*/target/failsafe-reports/.*xml" -exec cp {} ~/test-results/integration/ \;
             cd target;
             tar -zcvf surefire-reports.tar.gz surefire-reports;
+            tar -zcvf failsafe-reports.tar.gz failsafe-reports;
             mv surefire-reports.tar.gz ~/test-artifacts/;
+            mv failsafe-reports.tar.gz ~/test-artifacts/;
             cd site;
             tar -zcvf jacoco.tar.gz jacoco;
             mv jacoco.tar.gz ~/test-artifacts/;
