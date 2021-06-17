@@ -48,8 +48,8 @@ jobs:
           command: |
             mkdir -p ~/test-results/;
             ls -ltrh;
-            find . -type d -name ".*/target/surefire-reports" -exec tar -czf {}.tar.gz {} \;
-            find . -type d -regex ".*/target/site/jacoco" -exec tar -czf {}.tar.gz {} \;
+            find . -type d -name "surefire-reports*" -exec tar -czf {}.tar.gz {} \;
+            find . -type d -regex "jacoco*" -exec tar -czf {}.tar.gz {} \;
             mv surefire-reports.tar.gz ~/test-results/;
             mv jacoco.tar.gz ~/test-results/;
           when: always
