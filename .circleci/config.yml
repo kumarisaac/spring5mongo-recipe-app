@@ -48,11 +48,13 @@ jobs:
           command: |
             mkdir -p ~/test-results/;
             ls -ltrh;
-            cd target/surefire-reports;
-            find . -type d -name "surefire-reports*" -exec tar -czf {}.tar.gz {} \;
-            find . -type d -name "jacoco*" -exec tar -czf {}.tar.gz {} \;
+            cd target;
             ls -ltrh;
+            tar -zcvf surefire-reports.tar.gz surefire-reports;
             mv surefire-reports.tar.gz ~/test-results/;
+            cd site;
+            ls-ltrh;
+            tar -zcvf jacoco.tar.gz jacoco;
             mv jacoco.tar.gz ~/test-results/;
           when: always
 
