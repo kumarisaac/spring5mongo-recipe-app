@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -33,14 +34,16 @@ public class RecipeController {
     @GetMapping({"/recipe/{id}/show"})
     public String getRecipe(@PathVariable String id, Model model){
 
-       model.addAttribute("recipe", recipeService.findById(id));
+       model.addAttribute("recipe", recipeService.findById(id).block());
        return "recipe/show";
     }
 
     @GetMapping("recipe/new")
     public String saveRecipe(Model model){
         model.addAttribute("recipe", new RecipeCommand());
-        model.addAttribute("categoryList", categoryService.getAllCategories());
+        model.addAttribute("categoryList", categoryService.getAllCategories()
+                                               .collect(Collectors.toSet())
+                                                .block());
         return "recipe/recipeform";
     }
 
@@ -54,7 +57,7 @@ public class RecipeController {
             return "recipe/recipeform";
         }
 
-        RecipeCommand saveRecipe = recipeService.saveRecipeCommand(recipeCommand);
+        RecipeCommand saveRecipe = recipeService.saveRecipeCommand(recipeCommand).block();
 
         log.debug("end of saveorUpdate method");
         return "redirect:/recipe/" + saveRecipe.getId()+"/show";
@@ -64,9 +67,11 @@ public class RecipeController {
     public String updateRecipe(@PathVariable String id, Model model){
         log.debug("inside Update Recipe");
 
-        RecipeCommand command = recipeService.findCommandById(id);
+        RecipeCommand command = recipeService.findCommandById(id).block();
         model.addAttribute("recipe",command);
-        model.addAttribute("categoryList", categoryService.getAllCategories());
+        model.addAttribute("categoryList", categoryService.getAllCategories()
+                                                            .collect(Collectors.toSet())
+                                                            .block());
         log.debug("End of Update Recipe");
         return "/recipe/recipeform";
     }
@@ -75,7 +80,7 @@ public class RecipeController {
     public String deleteRecipe(@PathVariable String id, Model model){
 
         log.debug("Deleting recipe id: " + id);
-        recipeService.deleteById(id);
+        recipeService.deleteById(id).block();
         return "redirect:/";
     }
 

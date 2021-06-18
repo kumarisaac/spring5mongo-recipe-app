@@ -4,83 +4,78 @@ import guru.springframework.commands.RecipeCommand;
 import guru.springframework.converters.RecipeCommandToRecipe;
 import guru.springframework.converters.RecipeToRecipeCommand;
 import guru.springframework.domain.Recipe;
-import guru.springframework.exceptions.NotFoundException;
-import guru.springframework.repositories.RecipeRepository;
+import guru.springframework.repositories.reactive.RecipeReactiveRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
-    private final RecipeRepository recipeRepository;
+    private final RecipeReactiveRepository recipeRepository;
     private final RecipeCommandToRecipe recipeCommandToRecipe;
     private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe, RecipeToRecipeCommand recipeToRecipeCommand) {
+    public RecipeServiceImpl(RecipeReactiveRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe, RecipeToRecipeCommand recipeToRecipeCommand) {
         this.recipeRepository = recipeRepository;
         this.recipeCommandToRecipe = recipeCommandToRecipe;
         this.recipeToRecipeCommand = recipeToRecipeCommand;
     }
 
     @Override
-    public Set<Recipe> getRecipes() {
+    public Flux<Recipe> getRecipes() {
 
-        Set<Recipe> recipeSet = new HashSet<Recipe>();
-
-        recipeRepository.findAll().forEach(recipe -> {recipeSet.add(recipe);});
+        Flux<Recipe> recipeSet = recipeRepository.findAll();
 
         return recipeSet;
     }
 
-    public Recipe findById(String id){
+    public Mono<Recipe> findById(String id){
 
 
-        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
-        if(!recipeOptional.isPresent()){
-            //throw new RuntimeException("Recipe Not Found");
-            throw new NotFoundException("Recipe Not Found for recipe id : " + id.toString());
-        }
+        Mono<Recipe> recipeOptional = recipeRepository.findById(id);
+//        if(!recipeOptional){
+//            //throw new RuntimeException("Recipe Not Found");
+//            throw new NotFoundException("Recipe Not Found for recipe id : " + id.toString());
+//        }
 
 
-        return recipeOptional.get();
+        return recipeOptional;
     }
 
     @Override
-    public RecipeCommand saveRecipeCommand(RecipeCommand recipeCommand) {
-        log.debug("inside save Recipe command method");
+    public Mono<RecipeCommand> saveRecipeCommand(RecipeCommand recipeCommand) {
+        log.debug("inside save Recipe command method asdf");
 
         if(!recipeCommand.getId().isEmpty()){
-            Recipe dbRecipe = findById(recipeCommand.getId());
+            Recipe dbRecipe = findById(recipeCommand.getId()).block();
             recipeCommand.setImage(dbRecipe.getImage());
         }
 
         Recipe recipe = recipeCommandToRecipe.convert(recipeCommand);
 
-        Recipe savedRecipe = recipeRepository.save(recipe);
+        Recipe savedRecipe = recipeRepository.save(recipe).block();
 
         log.debug("Saved RecipeID: " + savedRecipe.getId());
         log.debug("End of save Recipe command method");
-        return recipeToRecipeCommand.convert(savedRecipe);
+        return Mono.just(recipeToRecipeCommand.convert(savedRecipe));
     }
 
     @Override
-    public RecipeCommand findCommandById(String aLong) {
-        return recipeToRecipeCommand.convert(findById(aLong));
+    public Mono<RecipeCommand> findCommandById(String aLong) {
+        return Mono.just(recipeToRecipeCommand.convert(findById(aLong).block()));
     }
 
     @Override
-    public void deleteById(String aLong) {
-        recipeRepository.deleteById(aLong);
+    public Mono<Void> deleteById(String aLong) {
+        recipeRepository.deleteById(aLong).block();
+        return Mono.empty();
     }
 
     @Override
-    public Collection<Recipe> findByDescriptionLike(String description) {
+    public Flux<Recipe> findByDescriptionLike(String description) {
         return recipeRepository.findByDescriptionLike(description);
     }
 }

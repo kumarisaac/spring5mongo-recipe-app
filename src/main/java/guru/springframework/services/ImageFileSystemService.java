@@ -3,12 +3,13 @@ package guru.springframework.services;
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.converters.RecipeToRecipeCommand;
 import guru.springframework.domain.Recipe;
-import guru.springframework.repositories.RecipeRepository;
+import guru.springframework.repositories.reactive.RecipeReactiveRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,21 +20,21 @@ import java.nio.file.Paths;
 @Profile("filestore")
 public class ImageFileSystemService implements ImageService {
 
-    private final RecipeRepository recipeRepository;
+    private final RecipeReactiveRepository recipeRepository;
     private final RecipeToRecipeCommand recipeToRecipeCommand;
 
     @Value("${Image.file.path}")
     private String folderPath;
 
-    public ImageFileSystemService(RecipeRepository recipeRepository, RecipeToRecipeCommand recipeToRecipeCommand) {
+    public ImageFileSystemService(RecipeReactiveRepository recipeRepository, RecipeToRecipeCommand recipeToRecipeCommand) {
         this.recipeRepository = recipeRepository;
         this.recipeToRecipeCommand = recipeToRecipeCommand;
     }
 
     @Override
-    public RecipeCommand getRecipeImage(String recipeId){
+    public Mono<RecipeCommand> getRecipeImage(String recipeId){
         log.debug("Inside Get recipe image");
-        RecipeCommand recipeCommand = recipeToRecipeCommand.convert(recipeRepository.findById(recipeId).get());
+        RecipeCommand recipeCommand = recipeToRecipeCommand.convert(recipeRepository.findById(recipeId).block());
 
         if(recipeCommand.getImagePath() != null){
                 try{
@@ -56,11 +57,11 @@ public class ImageFileSystemService implements ImageService {
         } else{
             log.debug("Recipe image path not found");
         }
-        return recipeCommand;
+        return Mono.just(recipeCommand);
     }
 
     @Override
-    public void UploadImage(MultipartFile file, String recipeId) {
+    public Mono<Void> UploadImage(MultipartFile file, String recipeId) {
         log.debug("Inside Upload recipe image");
 
         String fileName = folderPath  + file.getOriginalFilename();
@@ -68,14 +69,14 @@ public class ImageFileSystemService implements ImageService {
             Path path = Paths.get(fileName);
             Files.write(path, file.getBytes());
 
-            Recipe recipe = recipeRepository.findById(recipeId).get();
+            Recipe recipe = recipeRepository.findById(recipeId).block();
             recipe.setImagePath(fileName);
-            Recipe saveRecipe = recipeRepository.save(recipe);
+            Recipe saveRecipe = recipeRepository.save(recipe).block();
             log.debug("Saved File path is : " + saveRecipe.getImagePath());
         }catch (Exception e){
             log.debug("exception found while writing into file :" + e.getMessage());
             e.printStackTrace();
         }
-
+        return Mono.empty();
     }
 }

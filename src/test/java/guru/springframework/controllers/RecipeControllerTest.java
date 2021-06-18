@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
+import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -62,8 +63,9 @@ public class RecipeControllerTest extends TestCase {
         recipe.setId("1");
         //recipeSet.add(recipe);
 
+        Mono<Recipe> recipeMono = Mono.just(recipe);
         ArgumentCaptor<Recipe> argumentCaptor = ArgumentCaptor.forClass(Recipe.class);
-        when(recipeService.findById(anyString())).thenReturn(recipe);
+        when(recipeService.findById(anyString())).thenReturn(recipeMono);
 
         mockMvc.perform(get("/recipe/1/show"))
                 .andExpect(status().isOk())
@@ -73,7 +75,7 @@ public class RecipeControllerTest extends TestCase {
         String viewName = recipeController.getRecipe("1", model);
 
         verify(model).addAttribute(eq("recipe"), argumentCaptor.capture());
-        assertEquals(recipe, argumentCaptor.getValue());
+        assertEquals(recipeMono, argumentCaptor.getValue());
     }
 
     @Test
@@ -107,7 +109,7 @@ public class RecipeControllerTest extends TestCase {
         RecipeCommand recipeCommand = new RecipeCommand();
         recipeCommand.setId("2");
 
-        when(recipeService.findCommandById(any())).thenReturn(recipeCommand);
+        when(recipeService.findCommandById(any())).thenReturn(Mono.just(recipeCommand));
 
         mockMvc.perform(get("/recipe/1/update"))
                 .andExpect(status().isOk())

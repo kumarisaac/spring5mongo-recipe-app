@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.stream.Collectors;
+
 
 @Slf4j
 @Controller
@@ -21,7 +23,7 @@ public class IndexController {
     public String getRecipeList(Model model){
 
         log.debug("Start of getRecipeList Page Method with in Recipe controller");
-        model.addAttribute("recipes",recipeService.getRecipes());
+        model.addAttribute("recipes",recipeService.getRecipes().collect(Collectors.toSet()).block());
         log.debug("End of getRecipeList Page Method with in Recipe controller");
         return "index";
     }

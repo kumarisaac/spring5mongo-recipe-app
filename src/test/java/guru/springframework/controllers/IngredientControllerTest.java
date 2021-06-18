@@ -49,7 +49,7 @@ public class IngredientControllerTest {
     @Test
     public void testGetIngredientList() throws Exception{
         //given
-        RecipeCommand recipeCommand = new RecipeCommand();
+        Mono<RecipeCommand> recipeCommand = Mono.just(new RecipeCommand());
         when(recipeService.findCommandById(anyString())).thenReturn(recipeCommand);
 
         //when
@@ -103,7 +103,7 @@ public class IngredientControllerTest {
     public void testAddNewIngredient() throws Exception{
 
         //given
-        RecipeCommand recipeCommand = new RecipeCommand();
+        Mono<RecipeCommand> recipeCommand = Mono.just(new RecipeCommand());
         Flux<UnitOfMeasureCommand> uomCommands = Flux.just();
         IngredientCommand ingredientCommand = new IngredientCommand();
         when(recipeService.findCommandById(anyString())).thenReturn(recipeCommand);

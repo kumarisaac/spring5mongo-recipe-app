@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
+import reactor.core.publisher.Flux;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +53,8 @@ public class IndexControllerTest extends TestCase {
         recipeSet.add(recipe1);
         recipeSet.add(new Recipe());
 
-        when(recipeService.getRecipes()).thenReturn(recipeSet);
+        Flux<Recipe> recipeFlux = Flux.fromIterable(recipeSet);
+        when(recipeService.getRecipes()).thenReturn(recipeFlux);
         ArgumentCaptor<Set<Recipe>> argumentCaptor = ArgumentCaptor.forClass(Set.class);
 
         //when
@@ -62,7 +64,7 @@ public class IndexControllerTest extends TestCase {
         assertEquals("index", viewName);
         verify(recipeService, times(1)).getRecipes();
         verify(model, times(1)).addAttribute(eq("recipes"),argumentCaptor.capture());
-        assertEquals(recipeSet, argumentCaptor.getValue());
+        assertEquals(recipeFlux, argumentCaptor.getValue());
 
     }
 }

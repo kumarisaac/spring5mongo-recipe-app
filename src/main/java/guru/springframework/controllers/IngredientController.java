@@ -39,7 +39,7 @@ public class IngredientController {
     public String getIngredientList(@PathVariable String recipeId, Model model){
 
         log.debug("Inside Get Ingredient List");
-        model.addAttribute("recipe",recipeService.findCommandById(recipeId));
+        model.addAttribute("recipe",recipeService.findCommandById(recipeId).block());
 
         log.debug("end of Get Ingredient List");
         return "/recipe/ingredient/list";
@@ -88,7 +88,7 @@ public class IngredientController {
     public String addNewIngredient(@PathVariable String recipeId, Model model){
 
         log.debug("inside Add New Ingredient");
-        RecipeCommand recipeCommand = recipeService.findCommandById(recipeId);
+        RecipeCommand recipeCommand = recipeService.findCommandById(recipeId).block();
 
         IngredientCommand savedIngredient = ingredientToIngredientCommand.convert(new Ingredient()); ;
         savedIngredient.setRecipeId(recipeId);

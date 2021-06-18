@@ -1,11 +1,11 @@
 package guru.springframework.services;
 
 import guru.springframework.commands.CategoryCommand;
-
-import java.util.Set;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface CategoryService {
 
-    Set<CategoryCommand> getAllCategories();
-    CategoryCommand findById(String id);
+    Flux<CategoryCommand> getAllCategories();
+    Mono<CategoryCommand> findById(String id);
 }

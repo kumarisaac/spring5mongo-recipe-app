@@ -2,15 +2,14 @@ package guru.springframework.services;
 
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.domain.Recipe;
-
-import java.util.Collection;
-import java.util.Set;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface RecipeService {
-    Set<Recipe> getRecipes();
-    Recipe findById(String aLong);
-    RecipeCommand saveRecipeCommand(RecipeCommand recipeCommand);
-    RecipeCommand findCommandById(String aLong);
-    void deleteById(String aLong);
-    Collection<Recipe> findByDescriptionLike(String description);
+    Flux<Recipe> getRecipes();
+    Mono<Recipe> findById(String aLong);
+    Mono<RecipeCommand> saveRecipeCommand(RecipeCommand recipeCommand);
+    Mono<RecipeCommand> findCommandById(String aLong);
+    Mono<Void> deleteById(String aLong);
+    Flux<Recipe> findByDescriptionLike(String description);
 }

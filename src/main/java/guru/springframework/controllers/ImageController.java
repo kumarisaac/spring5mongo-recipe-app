@@ -34,7 +34,7 @@ public class ImageController {
     @GetMapping("/recipe/{recipeId}/getimage")
     public void getImage(@PathVariable String recipeId, HttpServletResponse response) throws IOException {
         log.debug("inside Get Image method");
-        RecipeCommand recipeCommand = imageService.getRecipeImage(recipeId);
+        RecipeCommand recipeCommand = imageService.getRecipeImage(recipeId).block();
 
         if(recipeCommand.getImage() != null){
             byte[] imageBytes = new byte[recipeCommand.getImage().length];
@@ -52,7 +52,7 @@ public class ImageController {
     @GetMapping("/recipe/{recipeId}/uploadimage")
     public String uploadImage(@PathVariable String recipeId, Model model){
 
-        RecipeCommand recipeCommand = recipeService.findCommandById(recipeId);
+        RecipeCommand recipeCommand = recipeService.findCommandById(recipeId).block();
 
         model.addAttribute("recipe", recipeCommand);
 
@@ -64,7 +64,7 @@ public class ImageController {
 
         log.debug("inside Save image method");
 
-        imageService.UploadImage(file, recipeId);
+        imageService.UploadImage(file, recipeId).block();
 
         log.debug("end of Save image method");
         return "redirect:/recipe/" + recipeId + "/show";

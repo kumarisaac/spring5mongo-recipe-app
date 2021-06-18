@@ -22,6 +22,6 @@ public class StringToCategoryCommand implements Converter<String, CategoryComman
         log.debug("start of String to Category Converter for id : " + s);
 
         log.debug("end of String to Category Converter");
-        return categoryService.findById(s);
+        return categoryService.findById(s).block();
     }
 }
