@@ -26,23 +26,20 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Flux<Recipe> getRecipes() {
+        log.debug("Inside Get Recipes");
 
-        Flux<Recipe> recipeSet = recipeRepository.findAll();
-
-        return recipeSet;
+        return recipeRepository.findAll();
     }
 
     public Mono<Recipe> findById(String id){
 
-
-        Mono<Recipe> recipeOptional = recipeRepository.findById(id);
 //        if(!recipeOptional){
 //            //throw new RuntimeException("Recipe Not Found");
 //            throw new NotFoundException("Recipe Not Found for recipe id : " + id.toString());
 //        }
 
 
-        return recipeOptional;
+        return recipeRepository.findById(id);
     }
 
     @Override
@@ -54,24 +51,27 @@ public class RecipeServiceImpl implements RecipeService {
             recipeCommand.setImage(dbRecipe.getImage());
         }
 
-        Recipe recipe = recipeCommandToRecipe.convert(recipeCommand);
-
-        Recipe savedRecipe = recipeRepository.save(recipe).block();
-
-        log.debug("Saved RecipeID: " + savedRecipe.getId());
         log.debug("End of save Recipe command method");
-        return Mono.just(recipeToRecipeCommand.convert(savedRecipe));
+        return recipeRepository.save(recipeCommandToRecipe.convert(recipeCommand))
+                .map(recipeToRecipeCommand::convert);
     }
 
     @Override
     public Mono<RecipeCommand> findCommandById(String aLong) {
-        return Mono.just(recipeToRecipeCommand.convert(findById(aLong).block()));
+
+        return recipeRepository.findById(aLong)
+                .map(recipe -> {
+                    RecipeCommand command = recipeToRecipeCommand.convert(recipe);
+                    command.getIngredients().forEach(ingredientCommand -> ingredientCommand.setRecipeId(recipe.getId()));
+                    return command;
+                });
+
+        //return Mono.just(recipeToRecipeCommand.convert(findById(aLong).block()));
     }
 
     @Override
     public Mono<Void> deleteById(String aLong) {
-        recipeRepository.deleteById(aLong).block();
-        return Mono.empty();
+        return recipeRepository.deleteById(aLong);
     }
 
     @Override

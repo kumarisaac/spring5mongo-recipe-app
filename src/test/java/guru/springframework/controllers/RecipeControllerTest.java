@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -75,11 +76,14 @@ public class RecipeControllerTest extends TestCase {
         String viewName = recipeController.getRecipe("1", model);
 
         verify(model).addAttribute(eq("recipe"), argumentCaptor.capture());
-        assertEquals(recipeMono, argumentCaptor.getValue());
+        assertEquals(recipeMono.block(), argumentCaptor.getValue());
     }
 
     @Test
     public void testGetRecipeForm() throws Exception{
+
+        when(categoryService.getAllCategories()).thenReturn(Flux.empty());
+
 
         mockMvc.perform(get("/recipe/new"))
                 .andExpect(status().isOk())
@@ -110,6 +114,7 @@ public class RecipeControllerTest extends TestCase {
         recipeCommand.setId("2");
 
         when(recipeService.findCommandById(any())).thenReturn(Mono.just(recipeCommand));
+        when(categoryService.getAllCategories()).thenReturn(Flux.empty());
 
         mockMvc.perform(get("/recipe/1/update"))
                 .andExpect(status().isOk())
@@ -117,9 +122,11 @@ public class RecipeControllerTest extends TestCase {
                 .andExpect(model().attributeExists("recipe"));
     }
 
-
+    @Test
     public void testDeleteRecipe() throws Exception{
-        mockMvc.perform(get("recipe/1/delete"))
+
+        when(recipeService.deleteById(anyString())).thenReturn(Mono.empty());
+        mockMvc.perform(get("/recipe/1/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
         verify(recipeService, times(1)).deleteById(anyString());
